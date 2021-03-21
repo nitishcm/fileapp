@@ -57,26 +57,23 @@ public class FileAppController {
                     inputFiles = fileAppUtils.validFileList(inputFiles);
 
                     if(inputFiles != null && inputFiles.size() > 0){
-                        boolean isValidFileName = false;
 
-                        if( request.getParameterMap() != null &&  request.getParameterMap().containsKey("zipfilename")){
-                            String val = request.getParameterMap().get("zipfilename")[0];
-                            if(!val.isEmpty() && val.matches("^\\w+(\\.)zip$")){
-                                fileName = val;
-                                isValidFileName = true;
-                            }
-                        }
-                        //If file name not in valid format then set default file name
-                        if(!isValidFileName){
-                            fileName = (fileName.concat( fileAppUtils.convertTS(new Timestamp(System.currentTimeMillis())))).concat(".zip");
-                        }
+                        fileName = (fileName.concat( fileAppUtils.convertTS(new Timestamp(System.currentTimeMillis())))).concat(".zip");
+
                         //Zip file and return
                          responseZip = fileAppUtils.zipFiles(inputFiles,fileName);
 
                         //Check if zip if created or not
                         if(responseZip != null && responseZip.isFile() ){
+                            //Check if custom file name provided
+                            if( request.getParameterMap() != null &&  request.getParameterMap().containsKey("zipfilename")){
+                                String val = request.getParameterMap().get("zipfilename")[0];
+                                if(!val.isEmpty() && val.matches("^\\w+(\\.)zip$")){
+                                    fileName = val;
+                                }
+                            }
                             response.setHeader("Content-Disposition", "attachment; filename="
-                                    + responseZip.getName());
+                                    + fileName);
                             response.setHeader("Content-Type",MediaType.APPLICATION_OCTET_STREAM_VALUE);
                             InputStreamResource inputStreamResource = new InputStreamResource(new FileInputStream(responseZip));
                             return  ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).body(inputStreamResource);
