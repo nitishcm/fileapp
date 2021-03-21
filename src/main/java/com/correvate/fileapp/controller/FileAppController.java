@@ -34,9 +34,14 @@ public class FileAppController {
 
     File responseZip = null;
 
-    /*
-        POST Method to upload files
+    /**
+     * Upload file method
+     * @param request
+     * @param response
+     * @return ResponseEntity<Resource>
      */
+
+
     @RequestMapping(path = "/fileUpload", method = RequestMethod.POST)
 
         public ResponseEntity<Resource> filesToZip(HttpServletRequest request, HttpServletResponse response){
@@ -45,7 +50,7 @@ public class FileAppController {
             // Check if file are present
             if(request.getHeader("content-type") != null && request.getHeader("content-type").contains("form-data") && request.getParts() != null){
 
-                List<Part> inputFiles = (List) request.getParts();
+                List<Part> inputFiles = (List<Part>) request.getParts();
 
                 if(inputFiles.size() > 0) {
                     // Fetch files which are valid for zipping
@@ -61,37 +66,31 @@ public class FileAppController {
                                 isValidFileName = true;
                             }
                         }
+                        //If file name not in valid format then set default file name
                         if(!isValidFileName){
-
-
                             fileName = (fileName.concat( fileAppUtils.convertTS(new Timestamp(System.currentTimeMillis())))).concat(".zip");
                         }
-
                         //Zip file and return
                          responseZip = fileAppUtils.zipFiles(inputFiles,fileName);
 
                         //Check if zip if created or not
                         if(responseZip != null && responseZip.isFile() ){
-
                             response.setHeader("Content-Disposition", "attachment; filename="
                                     + responseZip.getName());
                             response.setHeader("Content-Type",MediaType.APPLICATION_OCTET_STREAM_VALUE);
                             InputStreamResource inputStreamResource = new InputStreamResource(new FileInputStream(responseZip));
                             return  ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).body(inputStreamResource);
-
                         } else{
                             return fileAppUtils.returnResponse("error.no.zip");
                         }
                     }
-
                 }else{
-
                     return fileAppUtils.returnResponse("error.input.no.file");
                 }
             } else{
                 // If any other input type for body or no file
                 return fileAppUtils.returnResponse("error.input.body.type");
-            }
+                }
         }catch (IllegalStateException e){
            e.printStackTrace();
            return fileAppUtils.returnResponse("error.filelimit.exception");

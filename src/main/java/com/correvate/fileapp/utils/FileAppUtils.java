@@ -24,6 +24,10 @@ public class FileAppUtils {
     private Properties props;
     private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 
+    /**
+     * Constructor to load properties file
+     * @throws Exception
+     */
     public FileAppUtils() throws Exception{
         InputStream input = FileAppUtils.class.getClassLoader().getResourceAsStream("message.properties");
         props = new Properties();
@@ -31,9 +35,13 @@ public class FileAppUtils {
     }
 
 
-    /*
-        Validate each file to check if size > 0 and valid file
+    /**
+     * Validate each file to check if valid file and size > 0
+     * @param inputFiles
+     * @return List<Part>
      */
+
+
     public List<Part> validFileList(List<Part> inputFiles){
         List<Part> returnFiles = new ArrayList<Part>();
         for(Part file : inputFiles){
@@ -48,8 +56,11 @@ public class FileAppUtils {
         return returnFiles;
     }
 
-    /*
-        Zip given list of files
+    /**
+     * This function zips all the valid files from list
+     * @param inputFiles
+     * @param fileName
+     * @return File
      */
     public File zipFiles(List<Part> inputFiles, String fileName){
 
@@ -105,9 +116,13 @@ public class FileAppUtils {
         return returnFile;
     }
 
-    /*
-        To fetch message from message.properties file
+    /**
+     *  To fetch message from message.properties file
+     * @param key
+     * @return String
      */
+
+
     public String fetchPropertiesValue(String key){
         String resp = "";
         try{
@@ -121,16 +136,25 @@ public class FileAppUtils {
         }
         return resp;
     }
-    /*
-        To fetch message from message.properties file
+
+    /**
+     * To generate response in case of error
+     * @param key
+     * @return ResponseEntity
      */
+
+
     public ResponseEntity returnResponse(String key){
        return new ResponseEntity(fetchPropertiesValue(key),HttpStatus.BAD_REQUEST);
     }
 
-    /*
-    Format timestamp
+    /**
+     * Format timestamp as per format in FORMATTER variable
+     * @param ts
+     * @return String
      */
+
+
     public String convertTS(Timestamp ts) {
         return ts.toLocalDateTime().format(FORMATTER);
     }

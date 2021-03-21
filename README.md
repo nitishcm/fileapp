@@ -8,3 +8,4 @@ maven: 3.6.3
 Spring boot : 2.4.4
 path: /fileUpload
 Request body type : form-type
+Method: POST
