@@ -48,7 +48,7 @@ public class FileAppController {
         try{
             String fileName = "compressed_";
             // Check if file are present
-            if(request.getHeader("content-type") != null && request.getHeader("content-type").contains("form-data") && request.getParts() != null){
+            if(request != null && request.getHeader("content-type") != null && request.getHeader("content-type").contains("form-data") && request.getParts() != null){
 
                 List<Part> inputFiles = (List<Part>) request.getParts();
 
@@ -72,6 +72,7 @@ public class FileAppController {
                                     fileName = val;
                                 }
                             }
+                            logger.info("Filename in response " + fileName);
                             response.setHeader("Content-Disposition", "attachment; filename="
                                     + fileName);
                             response.setHeader("Content-Type",MediaType.APPLICATION_OCTET_STREAM_VALUE);
@@ -80,6 +81,8 @@ public class FileAppController {
                         } else{
                             return fileAppUtils.returnResponse("error.no.zip");
                         }
+                    }else{
+                        return fileAppUtils.returnResponse("error.input.no.valid.file");
                     }
                 }else{
                     return fileAppUtils.returnResponse("error.input.no.file");
@@ -96,8 +99,7 @@ public class FileAppController {
             return fileAppUtils.returnResponse("error.exception");
         }
 
-       return fileAppUtils.returnResponse("default.response");
-
     }
+
 
 }
