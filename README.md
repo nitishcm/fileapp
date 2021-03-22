@@ -9,3 +9,5 @@ Spring boot : 2.4.4
 path: /fileUpload
 Request body type : form-type
 Method: POST
+
+For details on API refer : https://github.com/nitishcm/fileapp-docker/blob/master/Correvate-API.docx
